@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "922658472456",
+    "project_id": "rigood-final",
+    "storage_bucket": "rigood-final.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:922658472456:android:541736706368e2970fc7bd",
+        "android_client_info": {
+          "package_name": "com.example.flutter_final"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDgLwxkENnzKq0pu1v652guVR6yVG37AY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
