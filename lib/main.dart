@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_final/firebase_options.dart';
+import 'package:moodtree/firebase_options.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_final/router.dart';
-import 'package:flutter_final/theme.dart';
-import 'package:flutter_final/constants/sizes.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:moodtree/router.dart';
+import 'package:moodtree/theme.dart';
+import 'package:moodtree/constants/sizes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,13 +27,34 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
+      title: "Mood Tree",
       routerConfig: ref.watch(routerProvider),
-      title: "App",
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ko', 'KR'),
+      ],
+      locale: const Locale('ko'),
       theme: ThemeData(
+        fontFamily: "seed",
         scaffoldBackgroundColor: ColorThemes.appBackground,
+        appBarTheme: const AppBarTheme(
+            elevation: 0,
+            centerTitle: true,
+            backgroundColor: ColorThemes.appBackground,
+            titleTextStyle: TextStyle(
+              fontFamily: "seed",
+              fontSize: Sizes.size14,
+              color: ColorThemes.darkgray,
+            )),
+        textTheme: const TextTheme().apply(
+          bodyColor: ColorThemes.black,
+        ),
         textSelectionTheme: const TextSelectionThemeData(
           cursorColor: ColorThemes.gray,
-          selectionColor: ColorThemes.primary,
+          selectionColor: ColorThemes.lightgray,
           selectionHandleColor: ColorThemes.primary,
         ),
         inputDecorationTheme: const InputDecorationTheme(
@@ -47,7 +69,7 @@ class MyApp extends ConsumerWidget {
           ),
           focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(
-              color: ColorThemes.primarygray,
+              color: ColorThemes.lightgray,
             ),
           ),
           suffixIconColor: ColorThemes.gray,

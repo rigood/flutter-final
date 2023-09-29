@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_final/theme.dart';
-import 'package:flutter_final/constants/sizes.dart';
+import 'package:moodtree/theme.dart';
+import 'package:moodtree/constants/sizes.dart';
 
 class AuthSubmitButton extends ConsumerWidget {
   final String text;
@@ -20,12 +20,12 @@ class AuthSubmitButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: isActive ? onTap : null,
       child: FractionallySizedBox(
         widthFactor: 1,
         child: Container(
           padding: EdgeInsets.symmetric(
-            vertical: fontSize! / 2,
+            vertical: fontSize!,
             horizontal: fontSize!,
           ),
           decoration: BoxDecoration(

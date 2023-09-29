@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_final/constants/sizes.dart';
+import 'package:moodtree/constants/sizes.dart';
 
 class Gaps {
   // Vertical Gaps

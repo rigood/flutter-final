@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_final/constants/gaps.dart';
-import 'package:flutter_final/constants/sizes.dart';
-import 'package:flutter_final/theme.dart';
+import 'package:moodtree/constants/sizes.dart';
+import 'package:moodtree/theme.dart';
 import 'package:go_router/go_router.dart';
 
 class AuthLink extends StatelessWidget {
@@ -18,35 +17,26 @@ class AuthLink extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        vertical: Sizes.size20,
+        vertical: Sizes.size8,
       ),
-      child: Row(
-        children: [
-          const Expanded(
-            child: Divider(
+      child: GestureDetector(
+        onTap: () {
+          context.goNamed(routeName);
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: Sizes.size12,
+            horizontal: Sizes.size12,
+          ),
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontStyle: FontStyle.italic,
+              fontSize: Sizes.size12,
               color: ColorThemes.gray,
             ),
           ),
-          Gaps.h10,
-          GestureDetector(
-            onTap: () {
-              context.goNamed(routeName);
-            },
-            child: Text(
-              text,
-              style: const TextStyle(
-                fontSize: Sizes.size12,
-                color: ColorThemes.gray,
-              ),
-            ),
-          ),
-          Gaps.h10,
-          const Expanded(
-            child: Divider(
-              color: ColorThemes.gray,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

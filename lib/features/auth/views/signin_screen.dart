@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_final/theme.dart';
+import 'package:moodtree/common/widgets/appbar_title.dart';
+import 'package:moodtree/features/auth/views/signup_screen.dart';
+import 'package:moodtree/features/auth/views/widgets/auth_link.dart';
+import 'package:moodtree/features/auth/views/widgets/auth_title.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_final/features/auth/view_models/signin_view_model.dart';
-import 'package:flutter_final/utils.dart';
-import 'package:flutter_final/constants/gaps.dart';
-import 'package:flutter_final/constants/sizes.dart';
-import 'package:flutter_final/common/widgets/expanded_text.dart';
-import 'package:flutter_final/common/widgets/input_suffix.dart';
-import 'package:flutter_final/features/auth/views/widgets/auth_submit_button.dart';
-import 'package:flutter_final/features/auth/views/widgets/auth_error_message.dart';
+import 'package:moodtree/features/auth/view_models/signin_view_model.dart';
+import 'package:moodtree/utils.dart';
+import 'package:moodtree/constants/gaps.dart';
+import 'package:moodtree/constants/sizes.dart';
+import 'package:moodtree/common/widgets/input_suffix.dart';
+import 'package:moodtree/features/auth/views/widgets/auth_submit_button.dart';
+import 'package:moodtree/features/auth/views/widgets/auth_error_message.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
   static const routeURL = "/signin";
@@ -92,7 +94,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     await ref.read(signInProvider.notifier).signIn(_email, _password);
 
     if (!ref.read(signInProvider).hasError && context.mounted) {
-      print("로그인!");
+      context.go("/home");
     }
   }
 
@@ -103,26 +105,21 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       child: SafeArea(
         child: Scaffold(
           resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            title: const AppBarTitle(),
+          ),
           body: Stack(
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                  top: Sizes.size96 + Sizes.size80,
+                  top: Sizes.size32,
                   left: Sizes.size32,
                   right: Sizes.size32,
                 ),
                 child: Column(
                   children: [
-                    const Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ExpandedText(
-                          text: "로그인",
-                          textStyle: TextThemes.authTitle,
-                        ),
-                      ],
-                    ),
-                    Gaps.v4,
+                    const AuthTitle(text: "로그인"),
+                    Gaps.v8,
                     Form(
                       child: Column(
                         children: [
@@ -179,13 +176,17 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     if (ref.watch(signInProvider).hasError)
                       AuthErrorMessage(
                         error: ref.watch(signInProvider).error,
-                      )
+                      ),
+                    const AuthLink(
+                      text: "아직 가입하지 않으셨다면?",
+                      routeName: SignUpScreen.routeName,
+                    ),
                   ],
                 ),
               ),
               const Positioned(
-                bottom: -20,
-                right: -30,
+                bottom: -30,
+                right: -35,
                 child: Image(
                   image: AssetImage(
                     "assets/images/flowers.png",

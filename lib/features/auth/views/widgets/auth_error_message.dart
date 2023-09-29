@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_final/theme.dart';
-import 'package:flutter_final/constants/sizes.dart';
-import 'package:flutter_final/common/widgets/expanded_text.dart';
+import 'package:moodtree/theme.dart';
+import 'package:moodtree/constants/sizes.dart';
+import 'package:moodtree/common/widgets/expanded_text.dart';
 
 class AuthErrorMessage extends ConsumerWidget {
   final Object? error;
@@ -19,6 +19,12 @@ class AuthErrorMessage extends ConsumerWidget {
         return "이미 사용 중인 이메일입니다.";
       case "invalid-email":
         return "잘못된 이메일 형식입니다.";
+      case "user-not-found":
+        return "존재하지 않는 이메일입니다.";
+      case "wrong-password":
+        return "비밀번호가 일치하지 않습니다.";
+      case "INVALID_LOGIN_CREDENTIALS":
+        return "이메일 또는 비밀번호가 일치하지 않습니다.";
       default:
         return "오류가 발생했습니다.";
     }
@@ -35,6 +41,7 @@ class AuthErrorMessage extends ConsumerWidget {
           ExpandedText(
               text: getErrorMessage(error),
               textStyle: const TextStyle(
+                fontSize: Sizes.size14,
                 color: ColorThemes.red,
               ))
         ],

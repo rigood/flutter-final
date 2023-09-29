@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_final/features/auth/views/widgets/auth_link.dart';
-import 'package:flutter_final/theme.dart';
+import 'package:moodtree/common/widgets/appbar_title.dart';
+import 'package:moodtree/features/auth/views/widgets/auth_link.dart';
+import 'package:moodtree/features/auth/views/widgets/auth_title.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_final/features/auth/view_models/signup_view_model.dart';
-import 'package:flutter_final/utils.dart';
-import 'package:flutter_final/features/auth/views/signin_screen.dart';
-import 'package:flutter_final/constants/gaps.dart';
-import 'package:flutter_final/constants/sizes.dart';
-import 'package:flutter_final/common/widgets/expanded_text.dart';
-import 'package:flutter_final/common/widgets/input_suffix.dart';
-import 'package:flutter_final/features/auth/views/widgets/auth_submit_button.dart';
-import 'package:flutter_final/features/auth/views/widgets/auth_error_message.dart';
+import 'package:moodtree/features/auth/view_models/signup_view_model.dart';
+import 'package:moodtree/utils.dart';
+import 'package:moodtree/features/auth/views/signin_screen.dart';
+import 'package:moodtree/constants/gaps.dart';
+import 'package:moodtree/constants/sizes.dart';
+import 'package:moodtree/common/widgets/input_suffix.dart';
+import 'package:moodtree/features/auth/views/widgets/auth_submit_button.dart';
+import 'package:moodtree/features/auth/views/widgets/auth_error_message.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
-  static const routeURL = "/";
+  static const routeURL = "/signup";
   static const routeName = "signUp";
 
   const SignUpScreen({super.key});
@@ -94,8 +94,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   }
 
   void _onSubmit() async {
-    if (!_isFormValid()) return;
-
     await ref.read(signUpProvider.notifier).signUp(_email, _password);
 
     if (!ref.read(signUpProvider).hasError && context.mounted) {
@@ -110,26 +108,21 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       child: SafeArea(
         child: Scaffold(
           resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            title: const AppBarTitle(),
+          ),
           body: Stack(
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                  top: Sizes.size96 + Sizes.size80,
+                  top: Sizes.size32,
                   left: Sizes.size32,
                   right: Sizes.size32,
                 ),
                 child: Column(
                   children: [
-                    const Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ExpandedText(
-                          text: "가입하기",
-                          textStyle: TextThemes.authTitle,
-                        ),
-                      ],
-                    ),
-                    Gaps.v4,
+                    const AuthTitle(text: "가입하기"),
+                    Gaps.v8,
                     Form(
                       child: Column(
                         children: [
@@ -187,18 +180,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       AuthErrorMessage(
                         error: ref.watch(signUpProvider).error,
                       ),
+                    const AuthLink(
+                      text: "이미 가입하셨다면?",
+                      routeName: SignInScreen.routeName,
+                    ),
                   ],
                 ),
               ),
               const Positioned(
-                bottom: -20,
-                right: -30,
+                bottom: -30,
+                right: -35,
                 child: Image(
                   image: AssetImage(
                     "assets/images/bee.png",
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

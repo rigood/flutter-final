@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_final/features/auth/repos/auth_repo.dart';
+import 'package:go_router/go_router.dart';
+import 'package:moodtree/features/auth/repos/auth_repo.dart';
 
 class SingInViewModel extends AsyncNotifier<void> {
   late final AuthenticationRepository _authRepo;
