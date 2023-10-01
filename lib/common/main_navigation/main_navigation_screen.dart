@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:moodtree/constants/gaps.dart';
 import 'package:go_router/go_router.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
+import 'package:moodtree/router.dart';
 import 'package:moodtree/theme.dart';
 import 'package:moodtree/constants/sizes.dart';
 import 'package:moodtree/common/main_navigation/widgets/nav_tab.dart';
@@ -40,9 +40,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 
   void _onPostButtonPressed() {
-    final date = DateFormat("yyyy-MM-dd").format(DateTime.now());
-    print("현재 날짜 $date 시각 ${DateTime.now()}");
-    context.push("/post/$date");
+    context.pushNamed(AppRoute.addPost.name);
   }
 
   @override

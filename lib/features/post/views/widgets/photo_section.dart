@@ -26,13 +26,23 @@ class PhotoSection extends ConsumerStatefulWidget {
 }
 
 class _PhotoSectionState extends ConsumerState<PhotoSection> {
+  bool isLoading = false;
+
   Future<void> _uploadPhotos() async {
+    setState(() {
+      isLoading = true;
+    });
+
     final photos = await ImagePicker().pickMultiImage();
 
     if (photos.isNotEmpty) {
       List<String> photoPaths = photos.map((photo) => photo.path).toList();
       widget.addPhotos(photoPaths);
     }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -77,7 +87,7 @@ class _PhotoSectionState extends ConsumerState<PhotoSection> {
                     left: Sizes.size20,
                   ),
                   child: PhotoUploadFrame(
-                    onTap: _uploadPhotos,
+                    onTap: isLoading ? () {} : _uploadPhotos,
                   ),
                 ),
                 Gaps.h10,

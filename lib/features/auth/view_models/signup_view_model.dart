@@ -1,27 +1,23 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:moodtree/features/auth/repos/auth_repo.dart';
+import 'package:moodtree/features/auth/repos/auth_repository.dart';
 
-class SingUpViewModel extends AsyncNotifier<void> {
-  late final AuthenticationRepository _authRepo;
-
+class SignUpViewModel extends AsyncNotifier<void> {
   @override
-  FutureOr<void> build() {
-    _authRepo = ref.read(authRepo);
-  }
+  FutureOr<void> build() {}
 
-  Future<void> signUp(String email, String password) async {
+  Future<bool> signUp({required String email, required String password}) async {
+    final authRepository = ref.read(authRepositoryProvider);
+
     state = const AsyncValue.loading();
 
-    state = await AsyncValue.guard(() async {
-      await _authRepo.signUp(
-        email,
-        password,
-      );
-    });
+    state = await AsyncValue.guard(
+        () => authRepository.signUp(email: email, password: password));
+
+    return state.hasError == false;
   }
 }
 
-final signUpProvider = AsyncNotifierProvider<SingUpViewModel, void>(
-  () => SingUpViewModel(),
+final signUpProvider = AsyncNotifierProvider<SignUpViewModel, void>(
+  () => SignUpViewModel(),
 );

@@ -1,6 +1,6 @@
 class PostModel {
-  final String uid;
-  final String date;
+  final String id;
+  final DateTime date;
   final int todayFeelingIndex;
   final List<String> weather;
   final List<String> meals;
@@ -13,7 +13,7 @@ class PostModel {
   final String diary;
 
   PostModel({
-    required this.uid,
+    required this.id,
     required this.date,
     required this.todayFeelingIndex,
     required this.weather,
@@ -28,8 +28,8 @@ class PostModel {
   });
 
   PostModel.empty()
-      : uid = "",
-        date = "",
+      : id = "",
+        date = DateTime.now(),
         todayFeelingIndex = -1,
         weather = [],
         meals = [],
@@ -42,7 +42,7 @@ class PostModel {
         diary = "";
 
   PostModel.fromJson(Map<String, dynamic> json)
-      : uid = json["uid"],
+      : id = json["id"],
         date = json["date"],
         todayFeelingIndex = json["todayFeelingIndex"],
         weather = List<String>.from(json["weather"]),
@@ -57,7 +57,7 @@ class PostModel {
 
   Map<String, dynamic> toJson() {
     return {
-      "uid": uid,
+      "id": id,
       "date": date,
       "todayFeelingIndex": todayFeelingIndex,
       "weather": weather,

@@ -28,6 +28,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
       title: "Mood Tree",
+      debugShowCheckedModeBanner: false,
       routerConfig: ref.watch(routerProvider),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

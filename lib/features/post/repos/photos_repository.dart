@@ -2,19 +2,22 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PhotoRepository {
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+class PhotosRepository {
+  final FirebaseStorage _storage;
 
-  Future<List<String>> uploadPhotoFiles(
-      {required List<String> photoUrlList,
-      required String uid,
-      required String date}) async {
+  PhotosRepository(this._storage);
+
+  Future<List<String>> uploadPhotoFiles({
+    required List<String> photoUrlList,
+    required String uid,
+    required String postId,
+  }) async {
     final uploadedPhotoUrlList = await Future.wait(
       photoUrlList.map(
-        (photoUrl) => uploadPhotoFile(
+        (photoUrl) => _uploadPhotoFile(
           photoUrl: photoUrl,
           uid: uid,
-          date: date,
+          postId: postId,
         ),
       ),
     );
@@ -22,16 +25,16 @@ class PhotoRepository {
     return uploadedPhotoUrlList;
   }
 
-  Future<String> uploadPhotoFile({
+  Future<String> _uploadPhotoFile({
     required String photoUrl,
     required String uid,
-    required String date,
+    required String postId,
   }) async {
     if (photoUrl.startsWith("https")) {
       return photoUrl;
     } else {
       final fileRef = _storage.ref().child(
-          "images/$uid/$date/${DateTime.now().millisecondsSinceEpoch.toString()}");
+          "images/$uid/$postId/${DateTime.now().millisecondsSinceEpoch.toString()}");
 
       final UploadTask uploadTask = fileRef.putFile(File(photoUrl));
 
@@ -42,4 +45,6 @@ class PhotoRepository {
   }
 }
 
-final photoRepository = Provider((ref) => PhotoRepository());
+final photosRepositoryProvider = Provider(
+  (ref) => PhotosRepository(FirebaseStorage.instance),
+);

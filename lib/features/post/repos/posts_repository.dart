@@ -1,36 +1,63 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:moodtree/features/auth/repos/auth_repository.dart';
 import 'package:moodtree/features/post/models/post_model.dart';
 
 class PostsRepository {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore;
 
-  Future<void> uploadPost(PostModel post) async {
-    print("PostsRepository / Post 업로드 시작");
+  PostsRepository(this._firestore);
 
-    await _db
-        .collection("posts")
-        .doc("${post.uid}_${post.date}")
-        .set(post.toJson());
+  static String postPath(String uid, String postId) =>
+      'users/$uid/posts/$postId';
+  static String postsPath(String uid) => 'users/$uid/posts';
 
-    print("PostsRepository / Post 업로드 끝");
+// create, update
+  Future<void> submitPost({required String uid, required PostModel post}) =>
+      _firestore.collection(postsPath(uid)).doc(post.id).set(post.toJson());
+
+// delete
+  Future<void> deletePost({required String uid, required String postId}) async {
+    final postRef = _firestore.doc(postPath(uid, postId));
+    await postRef.delete();
   }
 
-  Future<PostModel> findPost(String docId) async {
-    print("PostsRepository / Post 찾기 시작 docId : $docId");
+// read
+  Query<PostModel> queryPosts({required String uid}) =>
+      _firestore.collection(postsPath(uid)).withConverter(
+            fromFirestore: (snapshot, _) =>
+                PostModel.fromJson(snapshot.data()!),
+            toFirestore: (post, _) => post.toJson(),
+          );
 
-    final doc = await _db.collection("posts").doc(docId).get();
-
-    final postJsonData = doc.data();
-
-    if (postJsonData != null) {
-      print("PostsRepository / Post 있음 -> $postJsonData");
-      return PostModel.fromJson(postJsonData);
-    }
-
-    print("PostsRepository / Post 없음");
-    return PostModel.empty();
+  Future<List<PostModel>> fetchPosts({required String uid}) async {
+    final posts = await queryPosts(uid: uid).get();
+    return posts.docs.map((doc) => doc.data()).toList();
   }
+
+  Stream<List<PostModel>> watchPosts({required String uid}) =>
+      queryPosts(uid: uid)
+          .snapshots()
+          .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
+
+  Stream<PostModel> watchPost({required String uid, required String postId}) =>
+      _firestore
+          .doc(postPath(uid, postId))
+          .withConverter(
+            fromFirestore: (snapshot, _) =>
+                PostModel.fromJson(snapshot.data()!),
+            toFirestore: (post, _) => post.toJson(),
+          )
+          .snapshots()
+          .map((snapshot) => snapshot.data()!);
 }
 
-final postsRepository = Provider((ref) => PostsRepository());
+final postsRepositoryProvider =
+    Provider((ref) => PostsRepository(FirebaseFirestore.instance));
+
+final postsStreamProvider = StreamProvider((ref) {
+  final user = ref.watch(firebaseAuthProvider).currentUser;
+
+  final postsRepository = ref.watch(postsRepositoryProvider);
+  return postsRepository.watchPosts(uid: user!.uid);
+});

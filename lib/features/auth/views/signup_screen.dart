@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moodtree/common/widgets/appbar_title.dart';
+import 'package:moodtree/features/auth/view_models/signup_view_model.dart';
 import 'package:moodtree/features/auth/views/widgets/auth_link.dart';
 import 'package:moodtree/features/auth/views/widgets/auth_title.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
-import 'package:moodtree/features/auth/view_models/signup_view_model.dart';
+import 'package:moodtree/router.dart';
 import 'package:moodtree/utils.dart';
-import 'package:moodtree/features/auth/views/signin_screen.dart';
 import 'package:moodtree/constants/gaps.dart';
 import 'package:moodtree/constants/sizes.dart';
 import 'package:moodtree/common/widgets/input_suffix.dart';
@@ -15,9 +15,6 @@ import 'package:moodtree/features/auth/views/widgets/auth_submit_button.dart';
 import 'package:moodtree/features/auth/views/widgets/auth_error_message.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
-  static const routeURL = "/signup";
-  static const routeName = "signUp";
-
   const SignUpScreen({super.key});
 
   @override
@@ -94,15 +91,21 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   }
 
   void _onSubmit() async {
-    await ref.read(signUpProvider.notifier).signUp(_email, _password);
+    if (!_isFormValid()) return;
 
-    if (!ref.read(signUpProvider).hasError && context.mounted) {
-      context.goNamed(SignInScreen.routeName);
+    final success = await ref
+        .read(signUpProvider.notifier)
+        .signUp(email: _email, password: _password);
+
+    if (success && mounted) {
+      context.goNamed(AppRoute.signIn.name);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(signUpProvider);
+
     return GestureDetector(
       onTap: () => clsoeKeyboard(context),
       child: SafeArea(
@@ -130,6 +133,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             focusNode: _emailFocusNode,
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
+                            style: const TextStyle(
+                              decorationThickness: 0,
+                            ),
                             textInputAction: TextInputAction.next,
                             decoration: InputDecoration(
                               hintText: "이메일",
@@ -170,19 +176,18 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           AuthSubmitButton(
                             text: "가입",
                             onTap: _onSubmit,
-                            isActive: _isFormValid() &&
-                                !ref.watch(signUpProvider).isLoading,
+                            isActive: _isFormValid() && !state.isLoading,
                           ),
                         ],
                       ),
                     ),
-                    if (ref.watch(signUpProvider).hasError)
+                    if (state.hasError)
                       AuthErrorMessage(
-                        error: ref.watch(signUpProvider).error,
+                        error: state.error,
                       ),
-                    const AuthLink(
+                    AuthLink(
                       text: "이미 가입하셨다면?",
-                      routeName: SignInScreen.routeName,
+                      routeName: AppRoute.signIn.name,
                     ),
                   ],
                 ),
