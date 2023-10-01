@@ -7,12 +7,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PhotoFrame extends StatelessWidget {
   final String photoUrl;
-  final Function removePhoto;
+  final bool readOnly;
+  final Function? removePhoto;
 
   const PhotoFrame({
     super.key,
     required this.photoUrl,
-    required this.removePhoto,
+    required this.readOnly,
+    this.removePhoto,
   });
 
   @override
@@ -25,6 +27,7 @@ class PhotoFrame extends StatelessWidget {
           ),
           child: Container(
             decoration: BoxDecoration(
+              color: ColorThemes.appBackground,
               border: Border.all(
                 color: ColorThemes.primary.withOpacity(0.1),
               ),
@@ -49,26 +52,27 @@ class PhotoFrame extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-            top: 4,
-            right: 16,
-            child: GestureDetector(
-              onTap: () => removePhoto(photoUrl),
-              child: Container(
-                padding: const EdgeInsets.all(
-                  Sizes.size4,
+        if (readOnly == false)
+          Positioned(
+              top: 4,
+              right: 16,
+              child: GestureDetector(
+                onTap: readOnly ? null : () => removePhoto!(photoUrl),
+                child: Container(
+                  padding: const EdgeInsets.all(
+                    Sizes.size4,
+                  ),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: ColorThemes.primary.withOpacity(0.5),
+                  ),
+                  child: const FaIcon(
+                    FontAwesomeIcons.xmark,
+                    size: Sizes.size10,
+                    color: ColorThemes.white,
+                  ),
                 ),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: ColorThemes.primary.withOpacity(0.5),
-                ),
-                child: const FaIcon(
-                  FontAwesomeIcons.xmark,
-                  size: Sizes.size10,
-                  color: ColorThemes.white,
-                ),
-              ),
-            )),
+              )),
       ],
     );
   }

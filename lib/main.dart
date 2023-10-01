@@ -53,6 +53,10 @@ class MyApp extends ConsumerWidget {
         textTheme: const TextTheme().apply(
           bodyColor: ColorThemes.black,
         ),
+        textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+          foregroundColor: ColorThemes.primary,
+        )),
         textSelectionTheme: const TextSelectionThemeData(
           cursorColor: ColorThemes.gray,
           selectionColor: ColorThemes.lightgray,

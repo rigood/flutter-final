@@ -1,24 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:moodtree/constants/gaps.dart';
 import 'package:moodtree/constants/sizes.dart';
+import 'package:moodtree/features/post/models/emoji_model.dart';
 import 'package:moodtree/features/post/views/widgets/emoji_button.dart';
 import 'package:moodtree/theme.dart';
 
 class EmojiSelectSection extends StatelessWidget {
   final String title;
   final String sectionName;
-  final List<String> selectedEmojiLabels;
-  final List<Map<String, dynamic>> emojiList;
+  final List<EmojiModel> selectedEmojiList;
+  final List<EmojiModel> emojiList;
   final Function toggleEmoji;
 
   const EmojiSelectSection({
     super.key,
     required this.title,
     required this.sectionName,
-    required this.selectedEmojiLabels,
+    required this.selectedEmojiList,
     required this.emojiList,
     required this.toggleEmoji,
   });
+
+  bool _isSelected(List<EmojiModel> emojiList, String label) {
+    if (emojiList.isEmpty) {
+      return false;
+    } else {
+      return emojiList
+          .map((emoji) => emoji.label == label)
+          .toList()
+          .contains(true);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,10 +73,10 @@ class EmojiSelectSection extends StatelessWidget {
               children: [
                 for (var item in emojiList)
                   EmojiButton(
-                    emoji: item["emoji"],
-                    label: item["label"],
-                    isSelected: selectedEmojiLabels.contains(item["label"]),
-                    onTap: () => toggleEmoji(sectionName, item["label"]),
+                    emoji: item.emoji,
+                    label: item.label,
+                    isSelected: _isSelected(selectedEmojiList, item.label),
+                    onTap: () => toggleEmoji(sectionName, item),
                   ),
               ],
             )

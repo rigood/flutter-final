@@ -100,6 +100,7 @@ class _PhotoSectionState extends ConsumerState<PhotoSection> {
                         for (var photoUrl in widget.photoUrlList)
                           PhotoFrame(
                             photoUrl: photoUrl,
+                            readOnly: false,
                             removePhoto: widget.removePhoto,
                           ),
                       ],

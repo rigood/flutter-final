@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moodtree/features/auth/views/signup_screen.dart';
@@ -42,7 +41,7 @@ final routerProvider = Provider(
           builder: (context, state) => const PostScreen(),
         ),
         GoRoute(
-            path: "/edit",
+            path: "/edit/:id",
             name: AppRoute.editPost.name,
             builder: (context, state) {
               final postId = state.pathParameters['id'];

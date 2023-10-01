@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:moodtree/features/post/models/emoji_model.dart';
 import 'package:uuid/uuid.dart';
 import 'package:moodtree/features/auth/repos/auth_repository.dart';
 import 'package:moodtree/features/post/models/post_model.dart';
@@ -13,14 +14,15 @@ class PostViewModel extends AsyncNotifier<void> {
   Future<bool> submitPost({
     String? id,
     required DateTime date,
-    required int todayFeelingIndex,
-    required List<String> weather,
-    required List<String> meals,
-    required List<String> food,
-    required List<String> people,
-    required List<String> outing,
-    required List<String> activities,
-    required List<String> health,
+    required int todayRatingIndex,
+    required List<EmojiModel> feelings,
+    required List<EmojiModel> weather,
+    required List<EmojiModel> meals,
+    required List<EmojiModel> food,
+    required List<EmojiModel> people,
+    required List<EmojiModel> outing,
+    required List<EmojiModel> activities,
+    required List<EmojiModel> health,
     required List<String> photoUrlList,
     required String diary,
   }) async {
@@ -44,7 +46,8 @@ class PostViewModel extends AsyncNotifier<void> {
         post: PostModel(
           id: postId,
           date: date,
-          todayFeelingIndex: todayFeelingIndex,
+          todayRatingIndex: todayRatingIndex,
+          feelings: feelings,
           weather: weather,
           meals: meals,
           food: food,
@@ -54,11 +57,24 @@ class PostViewModel extends AsyncNotifier<void> {
           health: health,
           photoUrlList: uploadedPhotoUrlList,
           diary: diary,
+          updatedAt: DateTime.now(),
         ),
       );
     });
 
     return state.hasError == false;
+  }
+
+  Future<void> deletePost(String postId) async {
+    final currentUser = ref.read(authRepositoryProvider).currentUser!;
+
+    final postsRepository = ref.read(postsRepositoryProvider);
+
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(
+      () => postsRepository.deletePost(uid: currentUser.uid, postId: postId),
+    );
   }
 }
 

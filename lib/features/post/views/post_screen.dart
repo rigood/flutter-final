@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:moodtree/common/widgets/loading_indicator.dart';
 import 'package:moodtree/constants/gaps.dart';
 import 'package:moodtree/constants/sizes.dart';
 import 'package:moodtree/features/post/data/emoji_list.dart';
+import 'package:moodtree/features/post/models/emoji_model.dart';
 import 'package:moodtree/features/post/models/post_model.dart';
 import 'package:moodtree/features/post/view_models/post_view_model.dart';
+import 'package:moodtree/features/post/views/widgets/choose_alert.dialog.dart';
 import 'package:moodtree/features/post/views/widgets/date_select_button.dart';
 import 'package:moodtree/features/post/views/widgets/emoji_select_section.dart';
 import 'package:moodtree/features/post/views/widgets/photo_section.dart';
-import 'package:moodtree/features/post/views/widgets/today_feeling_select_section.dart';
+import 'package:moodtree/features/post/views/widgets/today_rating_section.dart';
 import 'package:moodtree/features/post/views/widgets/write_section.dart';
 import 'package:moodtree/theme.dart';
 import 'package:moodtree/utils.dart';
@@ -32,8 +33,8 @@ class PostScreen extends ConsumerStatefulWidget {
 
 class _PostScreenState extends ConsumerState<PostScreen> {
   late DateTime _date;
-  late int _todayFeelingIndex;
-  late Map<String, List<String>> _selectedEmojiList;
+  late int _todayRatingIndex;
+  late Map<String, List<EmojiModel>> _selectedEmojiList;
   late List<String> _photoUrlList;
   late String _diary;
 
@@ -42,8 +43,9 @@ class _PostScreenState extends ConsumerState<PostScreen> {
     super.initState();
 
     _date = widget.post?.date ?? DateTime.now();
-    _todayFeelingIndex = widget.post?.todayFeelingIndex ?? -1;
+    _todayRatingIndex = widget.post?.todayRatingIndex ?? -1;
     _selectedEmojiList = {
+      "feelings": widget.post?.feelings ?? [],
       "weather": widget.post?.weather ?? [],
       "meals": widget.post?.meals ?? [],
       "food": widget.post?.food ?? [],
@@ -62,22 +64,35 @@ class _PostScreenState extends ConsumerState<PostScreen> {
     });
   }
 
-  void _changeTodayFeelingIndex(int index) {
+  void _changeTodayRatingIndex(int index) {
     setState(() {
-      _todayFeelingIndex = index;
+      _todayRatingIndex = index;
     });
   }
 
-  void _toggleEmoji(String sectionName, String selectedEmojiLabel) {
-    if (_selectedEmojiList[sectionName]!.contains(selectedEmojiLabel)) {
+  void _toggleEmoji(String sectionName, EmojiModel selectedEmoji) {
+    late bool isEmojiAlreadyInList;
+
+    if (_selectedEmojiList[sectionName]!.isEmpty) {
+      isEmojiAlreadyInList = false;
+    } else {
+      isEmojiAlreadyInList = _selectedEmojiList[sectionName]!
+          .map((emoji) => emoji.label == selectedEmoji.label)
+          .toList()
+          .contains(true);
+    }
+
+    if (isEmojiAlreadyInList) {
+      // remove
       _selectedEmojiList[sectionName] = [
-        for (final label in _selectedEmojiList[sectionName]!)
-          if (label != selectedEmojiLabel) label
+        for (final emoji in _selectedEmojiList[sectionName]!)
+          if (emoji.label != selectedEmoji.label) selectedEmoji
       ];
     } else {
+      // add
       _selectedEmojiList[sectionName] = [
         ..._selectedEmojiList[sectionName]!,
-        selectedEmojiLabel
+        selectedEmoji
       ];
     }
 
@@ -109,10 +124,19 @@ class _PostScreenState extends ConsumerState<PostScreen> {
   }
 
   void _submitPost() async {
+    if (_todayRatingIndex == -1) {
+      showDialog(
+        context: context,
+        builder: (context) => const ChooseAlertDialog(),
+      );
+      return;
+    }
+
     final success = await ref.read(postProvider.notifier).submitPost(
           id: widget.postId,
           date: _date,
-          todayFeelingIndex: _todayFeelingIndex,
+          todayRatingIndex: _todayRatingIndex,
+          feelings: _selectedEmojiList["feelings"]!,
           weather: _selectedEmojiList["weather"]!,
           meals: _selectedEmojiList["meals"]!,
           food: _selectedEmojiList["food"]!,
@@ -165,16 +189,23 @@ class _PostScreenState extends ConsumerState<PostScreen> {
               ),
               child: Column(
                 children: [
-                  TodayFeelingSelectSection(
+                  TodayRatingSection(
                     title: "오늘 하루 어땠나요?",
-                    todayFeelingIndex: _todayFeelingIndex,
-                    changeTodayFeelingIndex: _changeTodayFeelingIndex,
+                    todayRatingIndex: _todayRatingIndex,
+                    changeTodayRatingIndex: _changeTodayRatingIndex,
                   ),
                   Gaps.v10,
                   EmojiSelectSection(
+                    title: "감정",
+                    sectionName: "feelings",
+                    selectedEmojiList: _selectedEmojiList["feelings"]!,
+                    emojiList: feelings,
+                    toggleEmoji: _toggleEmoji,
+                  ),
+                  EmojiSelectSection(
                     title: "날씨",
                     sectionName: "weather",
-                    selectedEmojiLabels: _selectedEmojiList["weather"]!,
+                    selectedEmojiList: _selectedEmojiList["weather"]!,
                     emojiList: weather,
                     toggleEmoji: _toggleEmoji,
                   ),
@@ -182,7 +213,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                   EmojiSelectSection(
                     title: "식사",
                     sectionName: "meals",
-                    selectedEmojiLabels: _selectedEmojiList["meals"]!,
+                    selectedEmojiList: _selectedEmojiList["meals"]!,
                     emojiList: meals,
                     toggleEmoji: _toggleEmoji,
                   ),
@@ -190,7 +221,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                   EmojiSelectSection(
                     title: "식습관",
                     sectionName: "food",
-                    selectedEmojiLabels: _selectedEmojiList["food"]!,
+                    selectedEmojiList: _selectedEmojiList["food"]!,
                     emojiList: food,
                     toggleEmoji: _toggleEmoji,
                   ),
@@ -198,7 +229,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                   EmojiSelectSection(
                     title: "사람",
                     sectionName: "people",
-                    selectedEmojiLabels: _selectedEmojiList["people"]!,
+                    selectedEmojiList: _selectedEmojiList["people"]!,
                     emojiList: people,
                     toggleEmoji: _toggleEmoji,
                   ),
@@ -206,7 +237,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                   EmojiSelectSection(
                     title: "외출",
                     sectionName: "outing",
-                    selectedEmojiLabels: _selectedEmojiList["outing"]!,
+                    selectedEmojiList: _selectedEmojiList["outing"]!,
                     emojiList: outing,
                     toggleEmoji: _toggleEmoji,
                   ),
@@ -214,7 +245,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                   EmojiSelectSection(
                     title: "활동",
                     sectionName: "activities",
-                    selectedEmojiLabels: _selectedEmojiList["activities"]!,
+                    selectedEmojiList: _selectedEmojiList["activities"]!,
                     emojiList: activities,
                     toggleEmoji: _toggleEmoji,
                   ),
@@ -222,7 +253,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                   EmojiSelectSection(
                     title: "신체",
                     sectionName: "health",
-                    selectedEmojiLabels: _selectedEmojiList["health"]!,
+                    selectedEmojiList: _selectedEmojiList["health"]!,
                     emojiList: health,
                     toggleEmoji: _toggleEmoji,
                   ),

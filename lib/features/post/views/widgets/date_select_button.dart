@@ -19,15 +19,16 @@ class DateSelectButton extends StatelessWidget {
   });
 
   Future<void> _selectDate() async {
-    final DateTime? pickedDate = await showDatePicker(
+    final DateTime? datePicked = await showDatePicker(
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-              colorScheme: const ColorScheme.light(
-            primary: ColorThemes.primary,
-            onPrimary: ColorThemes.white,
-            onSurface: ColorThemes.black,
-          )),
+            colorScheme: const ColorScheme.light(
+              primary: ColorThemes.primary,
+              onPrimary: ColorThemes.white,
+              onSurface: ColorThemes.black,
+            ),
+          ),
           child: child!,
         );
       },
@@ -37,8 +38,30 @@ class DateSelectButton extends StatelessWidget {
       lastDate: DateTime.now(),
     );
 
-    if (pickedDate != null) {
-      changeDate(pickedDate);
+    if (!context.mounted || datePicked == null) return;
+
+    final TimeOfDay? timePicked = await showTimePicker(
+      context: context,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: ColorThemes.primary,
+              onPrimary: ColorThemes.white,
+              onSurface: ColorThemes.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (timePicked != null) {
+      final newDate = DateTime(datePicked.year, datePicked.month,
+          datePicked.day, timePicked.hour, timePicked.minute);
+
+      changeDate(newDate);
     }
   }
 
@@ -48,7 +71,8 @@ class DateSelectButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
-          foregroundColor: Colors.grey,
+          foregroundColor: Colors.transparent,
+          disabledBackgroundColor: Colors.transparent,
         ),
         onPressed: disabled ? null : _selectDate,
         child: Row(

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:moodtree/constants/gaps.dart';
 import 'package:moodtree/constants/sizes.dart';
-import 'package:moodtree/features/post/views/widgets/today_feeling_emoji_button.dart';
+import 'package:moodtree/features/post/views/widgets/today_rating_button.dart';
 import 'package:moodtree/theme.dart';
 
-class TodayFeelingSelectSection extends StatelessWidget {
+class TodayRatingSection extends StatelessWidget {
   final String title;
-  final int todayFeelingIndex;
-  final Function changeTodayFeelingIndex;
+  final int todayRatingIndex;
+  final Function changeTodayRatingIndex;
 
-  const TodayFeelingSelectSection({
+  const TodayRatingSection({
     super.key,
     required this.title,
-    required this.todayFeelingIndex,
-    required this.changeTodayFeelingIndex,
+    required this.todayRatingIndex,
+    required this.changeTodayRatingIndex,
   });
 
   @override
@@ -54,35 +54,35 @@ class TodayFeelingSelectSection extends StatelessWidget {
             Gaps.v10,
             Wrap(
               children: [
-                TodayFeelingEmojiButton(
-                  emoji: "😢",
-                  label: "우울해요",
-                  isSelected: todayFeelingIndex == 0,
-                  onTap: () => changeTodayFeelingIndex(0),
+                TodayRatingButton(
+                  color: Colors.red,
+                  label: "매우불만",
+                  isSelected: todayRatingIndex == 0,
+                  onTap: () => changeTodayRatingIndex(0),
                 ),
-                TodayFeelingEmojiButton(
-                  emoji: "😣",
-                  label: "짜증나요",
-                  isSelected: todayFeelingIndex == 1,
-                  onTap: () => changeTodayFeelingIndex(1),
+                TodayRatingButton(
+                  color: Colors.brown,
+                  label: "불만",
+                  isSelected: todayRatingIndex == 1,
+                  onTap: () => changeTodayRatingIndex(1),
                 ),
-                TodayFeelingEmojiButton(
-                  emoji: "😔",
-                  label: "피곤해요",
-                  isSelected: todayFeelingIndex == 2,
-                  onTap: () => changeTodayFeelingIndex(2),
+                TodayRatingButton(
+                  color: const Color(0xffFBC02D),
+                  label: "보통",
+                  isSelected: todayRatingIndex == 2,
+                  onTap: () => changeTodayRatingIndex(2),
                 ),
-                TodayFeelingEmojiButton(
-                  emoji: "🙂",
-                  label: "괜찮아요",
-                  isSelected: todayFeelingIndex == 3,
-                  onTap: () => changeTodayFeelingIndex(3),
+                TodayRatingButton(
+                  color: Colors.lightGreen,
+                  label: "만족",
+                  isSelected: todayRatingIndex == 3,
+                  onTap: () => changeTodayRatingIndex(3),
                 ),
-                TodayFeelingEmojiButton(
-                  emoji: "😊",
-                  label: "기분좋아",
-                  isSelected: todayFeelingIndex == 4,
-                  onTap: () => changeTodayFeelingIndex(4),
+                TodayRatingButton(
+                  color: Colors.green,
+                  label: "매우만족",
+                  isSelected: todayRatingIndex == 4,
+                  onTap: () => changeTodayRatingIndex(4),
                 ),
               ],
             )

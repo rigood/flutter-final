@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:moodtree/theme.dart';
+import 'package:moodtree/common/widgets/logo_icon.dart';
+import 'package:moodtree/constants/sizes.dart';
 import 'package:moodtree/constants/gaps.dart';
 
 class AppBarTitle extends StatelessWidget {
@@ -15,11 +15,7 @@ class AppBarTitle extends StatelessWidget {
       children: [
         Text("Mood"),
         Gaps.h2,
-        FaIcon(
-          FontAwesomeIcons.leaf,
-          color: ColorThemes.primary,
-          size: 14,
-        ),
+        LogoIcon(size: Sizes.size14),
         Gaps.h2,
         Text("Tree"),
       ],
