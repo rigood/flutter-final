@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:moodtree/firebase_options.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:moodtree/riverpod_provider_observer.dart';
 import 'package:moodtree/router.dart';
 import 'package:moodtree/theme.dart';
 import 'package:moodtree/constants/sizes.dart';
@@ -15,8 +16,9 @@ void main() async {
   );
 
   runApp(
-    const ProviderScope(
-      child: MyApp(),
+    ProviderScope(
+      observers: [Logger()],
+      child: const MyApp(),
     ),
   );
 }
@@ -39,7 +41,10 @@ class MyApp extends ConsumerWidget {
       ],
       locale: const Locale('ko'),
       theme: ThemeData(
-        fontFamily: "seed",
+        textTheme: Theme.of(context).textTheme.apply(
+              fontFamily: "seed",
+              bodyColor: ColorThemes.black,
+            ),
         scaffoldBackgroundColor: ColorThemes.appBackground,
         appBarTheme: const AppBarTheme(
             elevation: 0,
@@ -47,18 +52,14 @@ class MyApp extends ConsumerWidget {
             backgroundColor: ColorThemes.appBackground,
             titleTextStyle: TextStyle(
               fontFamily: "seed",
-              fontSize: Sizes.size14,
               color: ColorThemes.darkgray,
             )),
-        textTheme: const TextTheme().apply(
-          bodyColor: ColorThemes.black,
-        ),
         textButtonTheme: TextButtonThemeData(
             style: TextButton.styleFrom(
           foregroundColor: ColorThemes.primary,
         )),
         textSelectionTheme: const TextSelectionThemeData(
-          cursorColor: ColorThemes.gray,
+          cursorColor: ColorThemes.primary,
           selectionColor: ColorThemes.lightgray,
           selectionHandleColor: ColorThemes.primary,
         ),
@@ -67,6 +68,7 @@ class MyApp extends ConsumerWidget {
             fontSize: Sizes.size14,
             color: ColorThemes.gray,
           ),
+          suffixIconColor: ColorThemes.gray,
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(
               color: ColorThemes.lightgray,
@@ -77,7 +79,6 @@ class MyApp extends ConsumerWidget {
               color: ColorThemes.lightgray,
             ),
           ),
-          suffixIconColor: ColorThemes.gray,
           errorStyle: TextStyle(
             color: ColorThemes.primary,
           ),

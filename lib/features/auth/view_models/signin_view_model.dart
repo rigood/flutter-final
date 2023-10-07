@@ -6,15 +6,13 @@ class SignInViewModel extends AsyncNotifier<void> {
   @override
   FutureOr<void> build() {}
 
-  Future<bool> signIn({required String email, required String password}) async {
+  Future<void> signIn({required String email, required String password}) async {
     final authRepository = ref.read(authRepositoryProvider);
 
     state = const AsyncValue.loading();
 
     state = await AsyncValue.guard(
         () => authRepository.signIn(email: email, password: password));
-
-    return state.hasError == false;
   }
 }
 

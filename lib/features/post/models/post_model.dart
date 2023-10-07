@@ -50,7 +50,7 @@ class PostModel {
         updatedAt = DateTime.now();
 
   PostModel.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
+      : id = json["id"] as String,
         date = json["date"].toDate(),
         todayRatingIndex = json["todayRatingIndex"],
         feelings = List<Map<String, dynamic>>.from(json["feelings"])
@@ -78,7 +78,7 @@ class PostModel {
             .map((e) => EmojiModel.fromJson(e))
             .toList(),
         photoUrlList = List<String>.from(json["photoUrlList"]),
-        diary = json["diary"],
+        diary = json["diary"] as String,
         updatedAt = json["updatedAt"].toDate();
 
   Map<String, dynamic> toJson() {

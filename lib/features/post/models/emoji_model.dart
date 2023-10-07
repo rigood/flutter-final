@@ -8,8 +8,8 @@ class EmojiModel {
   });
 
   EmojiModel.fromJson(Map<String, dynamic> json)
-      : emoji = json['emoji'],
-        label = json['label'];
+      : emoji = json['emoji'] as String,
+        label = json['label'] as String;
 
   Map<String, dynamic> toJson() {
     return {

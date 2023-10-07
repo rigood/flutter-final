@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:moodtree/constants/gaps.dart';
-import 'package:moodtree/constants/sizes.dart';
-import 'package:moodtree/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:moodtree/theme.dart';
+import 'package:moodtree/constants/sizes.dart';
+import 'package:moodtree/constants/gaps.dart';
 
 class NavTab extends StatelessWidget {
   final String label;
   final IconData icon;
   final bool isSelected;
-  final Function onTap;
-  final double? paddingLeft;
-  final double? paddingRight;
+  final void Function() onTap;
 
   const NavTab({
     super.key,
@@ -18,15 +16,13 @@ class NavTab extends StatelessWidget {
     required this.icon,
     required this.isSelected,
     required this.onTap,
-    this.paddingLeft,
-    this.paddingRight,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: () => onTap(),
+      onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 12,

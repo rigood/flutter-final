@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:moodtree/constants/sizes.dart';
-import 'package:moodtree/theme.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moodtree/theme.dart';
+import 'package:moodtree/constants/sizes.dart';
 
-class AuthLink extends StatelessWidget {
+class AuthLink extends ConsumerWidget {
   final String text;
   final String routeName;
+  final Function invalidateProvider;
 
   const AuthLink({
     super.key,
     required this.text,
     required this.routeName,
+    required this.invalidateProvider,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(
         vertical: Sizes.size8,
       ),
       child: GestureDetector(
         onTap: () {
-          context.goNamed(routeName);
+          context.pushNamed(routeName);
+          invalidateProvider();
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(

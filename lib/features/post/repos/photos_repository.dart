@@ -43,6 +43,30 @@ class PhotosRepository {
       return uploadedPhotoUrl;
     }
   }
+
+  Future<void> deleteImageFolder(
+      {required String uid, required String postId}) async {
+    final storageRef = _storage.ref().child("images/$uid/$postId");
+    final listResult = await storageRef.listAll();
+
+    await Future.wait(listResult.items.map((item) => item.delete()));
+  }
+
+  Future<void> deleteUnusedImageFiles(
+      {required String uid,
+      required String postId,
+      required List<String> uploadedPhotoUrlList}) async {
+    final storageRef = _storage.ref().child("images/$uid/$postId");
+    final list = await storageRef.listAll();
+
+    for (final imageRef in list.items) {
+      imageRef.getDownloadURL().then((url) async {
+        if (!uploadedPhotoUrlList.contains(url)) {
+          await _storage.refFromURL(url).delete();
+        }
+      });
+    }
+  }
 }
 
 final photosRepositoryProvider = Provider(

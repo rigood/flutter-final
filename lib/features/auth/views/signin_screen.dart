@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:moodtree/common/widgets/appbar_title.dart';
-import 'package:moodtree/features/auth/views/widgets/auth_link.dart';
-import 'package:moodtree/features/auth/views/widgets/auth_title.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moodtree/features/auth/view_models/signin_view_model.dart';
 import 'package:moodtree/router.dart';
 import 'package:moodtree/utils.dart';
-import 'package:moodtree/constants/gaps.dart';
 import 'package:moodtree/constants/sizes.dart';
-import 'package:moodtree/common/widgets/input_suffix.dart';
+import 'package:moodtree/constants/gaps.dart';
+import 'package:moodtree/common/widgets/appbar_title.dart';
+import 'package:moodtree/features/auth/views/widgets/auth_title.dart';
+import 'package:moodtree/features/auth/views/widgets/auth_link.dart';
+import 'package:moodtree/features/auth/views/widgets/auth_input_suffix.dart';
 import 'package:moodtree/features/auth/views/widgets/auth_submit_button.dart';
 import 'package:moodtree/features/auth/views/widgets/auth_error_message.dart';
 
@@ -88,13 +87,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   void _onSubmit() async {
     if (!_isFormValid()) return;
 
-    final success = await ref
+    await ref
         .read(signInProvider.notifier)
         .signIn(email: _email, password: _password);
-
-    if (success && mounted) {
-      context.go("/home");
-    }
   }
 
   @override
@@ -136,7 +131,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                               hintText: "이메일",
                               suffixIcon: _email.isNotEmpty &&
                                       _emailFocusNode.hasFocus
-                                  ? InputSuffix(
+                                  ? AuthInputSuffix(
                                       icon: FontAwesomeIcons.solidCircleXmark,
                                       onTap: _emailController.clear,
                                     )
@@ -157,7 +152,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                               hintText: "비밀번호",
                               suffixIcon: _password.isNotEmpty &&
                                       _passwordFocusNode.hasFocus
-                                  ? InputSuffix(
+                                  ? AuthInputSuffix(
                                       icon: FontAwesomeIcons.solidCircleXmark,
                                       onTap: _passwordController.clear,
                                     )
@@ -170,8 +165,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                           Gaps.v20,
                           AuthSubmitButton(
                             text: "로그인",
-                            onTap: _onSubmit,
                             isActive: _isFormValid() && !state.isLoading,
+                            onTap: _onSubmit,
                           ),
                         ],
                       ),
@@ -183,6 +178,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     AuthLink(
                       text: "아직 가입하지 않으셨다면?",
                       routeName: AppRoute.signUp.name,
+                      invalidateProvider: () => ref.read(signInProvider),
                     ),
                   ],
                 ),

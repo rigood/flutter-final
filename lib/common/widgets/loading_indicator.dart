@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:moodtree/common/widgets/logo_icon.dart';
 import 'package:moodtree/theme.dart';
 import 'package:moodtree/constants/sizes.dart';
 import 'package:moodtree/constants/gaps.dart';
+import 'package:moodtree/common/widgets/logo_icon.dart';
 
 class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({

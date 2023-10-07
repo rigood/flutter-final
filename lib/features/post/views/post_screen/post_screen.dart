@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:moodtree/constants/gaps.dart';
+import 'package:moodtree/utils.dart';
+import 'package:moodtree/theme.dart';
 import 'package:moodtree/constants/sizes.dart';
+import 'package:moodtree/constants/gaps.dart';
 import 'package:moodtree/features/post/data/emoji_list.dart';
 import 'package:moodtree/features/post/models/emoji_model.dart';
 import 'package:moodtree/features/post/models/post_model.dart';
 import 'package:moodtree/features/post/view_models/post_view_model.dart';
-import 'package:moodtree/features/post/views/widgets/choose_alert.dialog.dart';
-import 'package:moodtree/features/post/views/widgets/date_select_button.dart';
-import 'package:moodtree/features/post/views/widgets/emoji_select_section.dart';
-import 'package:moodtree/features/post/views/widgets/photo_section.dart';
-import 'package:moodtree/features/post/views/widgets/today_rating_section.dart';
-import 'package:moodtree/features/post/views/widgets/write_section.dart';
-import 'package:moodtree/theme.dart';
-import 'package:moodtree/utils.dart';
+import 'package:moodtree/features/post/views/post_screen/widgets/date_select_button.dart';
+import 'package:moodtree/features/post/views/post_screen/widgets/today_rating_section.dart';
+import 'package:moodtree/features/post/views/post_screen/widgets/emoji_select_section.dart';
+import 'package:moodtree/features/post/views/post_screen/widgets/photo_section.dart';
+import 'package:moodtree/features/post/views/post_screen/widgets/write_section.dart';
+import 'package:moodtree/features/post/views/post_screen/widgets/choose_alert.dialog.dart';
 
 class PostScreen extends ConsumerStatefulWidget {
   final String? postId;
@@ -70,29 +70,22 @@ class _PostScreenState extends ConsumerState<PostScreen> {
     });
   }
 
-  void _toggleEmoji(String sectionName, EmojiModel selectedEmoji) {
-    late bool isEmojiAlreadyInList;
+  void _toggleEmoji(String sectionName, EmojiModel toggledEmoji) {
+    bool isSelected = _selectedEmojiList[sectionName]!
+        .map((emoji) => emoji.label == toggledEmoji.label)
+        .contains(true);
 
-    if (_selectedEmojiList[sectionName]!.isEmpty) {
-      isEmojiAlreadyInList = false;
-    } else {
-      isEmojiAlreadyInList = _selectedEmojiList[sectionName]!
-          .map((emoji) => emoji.label == selectedEmoji.label)
-          .toList()
-          .contains(true);
-    }
-
-    if (isEmojiAlreadyInList) {
-      // remove
+    if (isSelected) {
+      // Remove emoji from list
       _selectedEmojiList[sectionName] = [
         for (final emoji in _selectedEmojiList[sectionName]!)
-          if (emoji.label != selectedEmoji.label) selectedEmoji
+          if (emoji.label != toggledEmoji.label) emoji
       ];
     } else {
-      // add
+      // Add emoji to list
       _selectedEmojiList[sectionName] = [
         ..._selectedEmojiList[sectionName]!,
-        selectedEmoji
+        toggledEmoji
       ];
     }
 
@@ -198,63 +191,64 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                   EmojiSelectSection(
                     title: "감정",
                     sectionName: "feelings",
-                    selectedEmojiList: _selectedEmojiList["feelings"]!,
                     emojiList: feelings,
+                    selectedEmojiList: _selectedEmojiList["feelings"]!,
                     toggleEmoji: _toggleEmoji,
                   ),
+                  Gaps.v10,
                   EmojiSelectSection(
                     title: "날씨",
                     sectionName: "weather",
-                    selectedEmojiList: _selectedEmojiList["weather"]!,
                     emojiList: weather,
+                    selectedEmojiList: _selectedEmojiList["weather"]!,
                     toggleEmoji: _toggleEmoji,
                   ),
                   Gaps.v10,
                   EmojiSelectSection(
                     title: "식사",
                     sectionName: "meals",
-                    selectedEmojiList: _selectedEmojiList["meals"]!,
                     emojiList: meals,
+                    selectedEmojiList: _selectedEmojiList["meals"]!,
                     toggleEmoji: _toggleEmoji,
                   ),
                   Gaps.v10,
                   EmojiSelectSection(
                     title: "식습관",
                     sectionName: "food",
-                    selectedEmojiList: _selectedEmojiList["food"]!,
                     emojiList: food,
+                    selectedEmojiList: _selectedEmojiList["food"]!,
                     toggleEmoji: _toggleEmoji,
                   ),
                   Gaps.v10,
                   EmojiSelectSection(
                     title: "사람",
                     sectionName: "people",
-                    selectedEmojiList: _selectedEmojiList["people"]!,
                     emojiList: people,
+                    selectedEmojiList: _selectedEmojiList["people"]!,
                     toggleEmoji: _toggleEmoji,
                   ),
                   Gaps.v10,
                   EmojiSelectSection(
                     title: "외출",
                     sectionName: "outing",
-                    selectedEmojiList: _selectedEmojiList["outing"]!,
                     emojiList: outing,
+                    selectedEmojiList: _selectedEmojiList["outing"]!,
                     toggleEmoji: _toggleEmoji,
                   ),
                   Gaps.v10,
                   EmojiSelectSection(
                     title: "활동",
                     sectionName: "activities",
-                    selectedEmojiList: _selectedEmojiList["activities"]!,
                     emojiList: activities,
+                    selectedEmojiList: _selectedEmojiList["activities"]!,
                     toggleEmoji: _toggleEmoji,
                   ),
                   Gaps.v10,
                   EmojiSelectSection(
                     title: "신체",
                     sectionName: "health",
-                    selectedEmojiList: _selectedEmojiList["health"]!,
                     emojiList: health,
+                    selectedEmojiList: _selectedEmojiList["health"]!,
                     toggleEmoji: _toggleEmoji,
                   ),
                   Gaps.v10,

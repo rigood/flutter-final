@@ -60,6 +60,14 @@ class PostViewModel extends AsyncNotifier<void> {
           updatedAt: DateTime.now(),
         ),
       );
+
+      if (id != null) {
+        await photosRepository.deleteUnusedImageFiles(
+          uid: currentUser.uid,
+          postId: postId,
+          uploadedPhotoUrlList: uploadedPhotoUrlList,
+        );
+      }
     });
 
     return state.hasError == false;
@@ -69,11 +77,17 @@ class PostViewModel extends AsyncNotifier<void> {
     final currentUser = ref.read(authRepositoryProvider).currentUser!;
 
     final postsRepository = ref.read(postsRepositoryProvider);
+    final photosRepository = ref.read(photosRepositoryProvider);
 
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(
-      () => postsRepository.deletePost(uid: currentUser.uid, postId: postId),
+      () async {
+        await photosRepository.deleteImageFolder(
+            uid: currentUser.uid, postId: postId);
+
+        await postsRepository.deletePost(uid: currentUser.uid, postId: postId);
+      },
     );
   }
 }

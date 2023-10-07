@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:moodtree/constants/gaps.dart';
 import 'package:go_router/go_router.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moodtree/router.dart';
 import 'package:moodtree/theme.dart';
 import 'package:moodtree/constants/sizes.dart';
+import 'package:moodtree/constants/gaps.dart';
 import 'package:moodtree/common/main_navigation/widgets/nav_tab.dart';
-import 'package:moodtree/features/post/views/home_screen.dart';
+import 'package:moodtree/features/post/views/home_screen/home_screen.dart';
 import 'package:moodtree/features/settings/views/settings_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -36,7 +36,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       _selectedTabIndex = tabIndex;
     });
 
-    context.go("/${_tabs[tabIndex]}");
+    context.push("/${_tabs[tabIndex]}");
   }
 
   void _onPostButtonPressed() {
@@ -47,6 +47,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        extendBody: true,
         body: Stack(
           children: [
             Offstage(

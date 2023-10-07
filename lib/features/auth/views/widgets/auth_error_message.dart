@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moodtree/theme.dart';
 import 'package:moodtree/constants/sizes.dart';
-import 'package:moodtree/common/widgets/expanded_text.dart';
 
 class AuthErrorMessage extends ConsumerWidget {
   final Object? error;
@@ -38,12 +37,15 @@ class AuthErrorMessage extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          ExpandedText(
-              text: getErrorMessage(error),
-              textStyle: const TextStyle(
+          Expanded(
+            child: Text(
+              getErrorMessage(error),
+              style: const TextStyle(
                 fontSize: Sizes.size14,
                 color: ColorThemes.red,
-              ))
+              ),
+            ),
+          ),
         ],
       ),
     );

@@ -10,11 +10,12 @@ class PostsRepository {
 
   static String postPath(String uid, String postId) =>
       'users/$uid/posts/$postId';
+
   static String postsPath(String uid) => 'users/$uid/posts';
 
 // create, update
   Future<void> submitPost({required String uid, required PostModel post}) =>
-      _firestore.collection(postsPath(uid)).doc(post.id).set(post.toJson());
+      _firestore.doc(postPath(uid, post.id)).set(post.toJson());
 
 // delete
   Future<void> deletePost({required String uid, required String postId}) async {
@@ -23,41 +24,50 @@ class PostsRepository {
   }
 
 // read
-  Query<PostModel> queryPosts({required String uid}) =>
-      _firestore.collection(postsPath(uid)).withConverter(
-            fromFirestore: (snapshot, _) =>
-                PostModel.fromJson(snapshot.data()!),
-            toFirestore: (post, _) => post.toJson(),
-          );
-
-  Future<List<PostModel>> fetchPosts({required String uid}) async {
-    final posts = await queryPosts(uid: uid).get();
-    return posts.docs.map((doc) => doc.data()).toList();
+  Stream<List<PostModel>> watchPosts({required String uid}) {
+    return _firestore
+        .collection(postsPath(uid))
+        .withConverter(
+          fromFirestore: (snapshot, _) => PostModel.fromJson(snapshot.data()!),
+          toFirestore: (post, _) => post.toJson(),
+        )
+        .orderBy("date", descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
   }
 
-  Stream<List<PostModel>> watchPosts({required String uid}) =>
-      queryPosts(uid: uid)
-          .snapshots()
-          .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
+  // Query<PostModel> queryPosts({required String uid}) =>
+  //     _firestore.collection(postsPath(uid)).withConverter(
+  //           fromFirestore: (snapshot, _) =>
+  //               PostModel.fromJson(snapshot.data()!),
+  //           toFirestore: (post, _) => post.toJson(),
+  //         );
 
-  Stream<PostModel> watchPost({required String uid, required String postId}) =>
-      _firestore
-          .doc(postPath(uid, postId))
-          .withConverter(
-            fromFirestore: (snapshot, _) =>
-                PostModel.fromJson(snapshot.data()!),
-            toFirestore: (post, _) => post.toJson(),
-          )
-          .snapshots()
-          .map((snapshot) => snapshot.data()!);
+  // Future<List<PostModel>> fetchPosts({required String uid}) async {
+  //   final posts = await queryPosts(uid: uid).get();
+  //   return posts.docs.map((doc) => doc.data()).toList();
+  // }
+
+  // Stream<PostModel> watchPost({required String uid, required String postId}) =>
+  //     _firestore
+  //         .doc(postPath(uid, postId))
+  //         .withConverter(
+  //           fromFirestore: (snapshot, _) =>
+  //               PostModel.fromJson(snapshot.data()!),
+  //           toFirestore: (post, _) => post.toJson(),
+  //         )
+  //         .snapshots()
+  //         .map((snapshot) => snapshot.data()!);
 }
 
 final postsRepositoryProvider =
     Provider((ref) => PostsRepository(FirebaseFirestore.instance));
 
-final postsStreamProvider = StreamProvider((ref) {
-  final user = ref.watch(firebaseAuthProvider).currentUser;
+final postsStreamProvider = StreamProvider.autoDispose(
+  (ref) {
+    final user = ref.watch(authRepositoryProvider).currentUser;
 
-  final postsRepository = ref.watch(postsRepositoryProvider);
-  return postsRepository.watchPosts(uid: user!.uid);
-});
+    final postsRepository = ref.watch(postsRepositoryProvider);
+    return postsRepository.watchPosts(uid: user!.uid);
+  },
+);

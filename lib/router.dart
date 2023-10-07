@@ -1,10 +1,11 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:moodtree/features/auth/repos/auth_repository.dart';
+import 'package:moodtree/features/post/models/post_model.dart';
 import 'package:moodtree/features/auth/views/signup_screen.dart';
 import 'package:moodtree/features/auth/views/signin_screen.dart';
-import 'package:moodtree/common/main_navigation/main_navigation_screen.dart';
-import 'package:moodtree/features/post/models/post_model.dart';
-import 'package:moodtree/features/post/views/post_screen.dart';
+import 'package:moodtree/common/main_navigation/views/main_navigation_screen.dart';
+import 'package:moodtree/features/post/views/post_screen/post_screen.dart';
 
 enum AppRoute {
   signUp,
@@ -15,8 +16,19 @@ enum AppRoute {
 
 final routerProvider = Provider(
   (ref) {
+    ref.watch(authStateChangesProvider);
     return GoRouter(
-      initialLocation: "/signUp",
+      initialLocation: "/home",
+      redirect: (context, state) {
+        final isLoggedIn = ref.read(authRepositoryProvider).isLoggedIn;
+        if (!isLoggedIn) {
+          if (state.matchedLocation != "/signIn" &&
+              state.matchedLocation != "/signUp") {
+            return "/signIn";
+          }
+        }
+        return null;
+      },
       routes: [
         GoRoute(
           path: "/signUp",

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:moodtree/constants/sizes.dart';
-import 'package:moodtree/theme.dart';
 
 class AuthTitle extends StatelessWidget {
   final String text;
@@ -17,7 +16,6 @@ class AuthTitle extends StatelessWidget {
       style: const TextStyle(
         fontSize: Sizes.size24,
         fontWeight: FontWeight.w700,
-        color: ColorThemes.black,
       ),
     );
   }

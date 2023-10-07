@@ -35,10 +35,10 @@ final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
   return FirebaseAuth.instance;
 });
 
-final authRepositoryProvider = Provider((ref) {
-  return AuthRepository(ref.watch(firebaseAuthProvider));
+final authRepositoryProvider = Provider<AuthRepository>((ref) {
+  return AuthRepository(ref.read(firebaseAuthProvider));
 });
 
 final authStateChangesProvider = StreamProvider<User?>((ref) {
-  return ref.watch(authRepositoryProvider).authStateChanges();
+  return ref.read(authRepositoryProvider).authStateChanges();
 });
