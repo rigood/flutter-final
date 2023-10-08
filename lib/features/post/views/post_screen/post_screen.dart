@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moodtree/common/widgets/custom_alert_dialog.dart';
 import 'package:moodtree/utils.dart';
 import 'package:moodtree/theme.dart';
 import 'package:moodtree/constants/sizes.dart';
@@ -15,7 +16,6 @@ import 'package:moodtree/features/post/views/post_screen/widgets/today_rating_se
 import 'package:moodtree/features/post/views/post_screen/widgets/emoji_select_section.dart';
 import 'package:moodtree/features/post/views/post_screen/widgets/photo_section.dart';
 import 'package:moodtree/features/post/views/post_screen/widgets/write_section.dart';
-import 'package:moodtree/features/post/views/post_screen/widgets/choose_alert.dialog.dart';
 
 class PostScreen extends ConsumerStatefulWidget {
   final String? postId;
@@ -120,7 +120,9 @@ class _PostScreenState extends ConsumerState<PostScreen> {
     if (_todayRatingIndex == -1) {
       showDialog(
         context: context,
-        builder: (context) => const ChooseAlertDialog(),
+        builder: (context) => const CustomAlertDialog(
+          text: "오늘 하루 만족도를 선택해주세요.",
+        ),
       );
       return;
     }

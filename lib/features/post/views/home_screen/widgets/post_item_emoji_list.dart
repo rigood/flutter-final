@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:moodtree/constants/gaps.dart';
-import 'package:moodtree/constants/sizes.dart';
 import 'package:moodtree/features/post/models/emoji_model.dart';
 import 'package:moodtree/theme.dart';
+import 'package:moodtree/constants/sizes.dart';
+import 'package:moodtree/constants/gaps.dart';
 
 class PostItemEmojiList extends StatelessWidget {
   final List<EmojiModel> emojiList;

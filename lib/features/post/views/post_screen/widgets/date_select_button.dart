@@ -86,12 +86,13 @@ class DateSelectButton extends StatelessWidget {
                 color: ColorThemes.darkgray,
               ),
             ),
-            Gaps.h5,
-            const Icon(
-              Icons.calendar_month,
-              size: Sizes.size18,
-              color: ColorThemes.darkgray,
-            ),
+            if (!disabled) Gaps.h5,
+            if (!disabled)
+              const Icon(
+                Icons.calendar_month,
+                size: Sizes.size18,
+                color: ColorThemes.darkgray,
+              ),
           ],
         ));
   }

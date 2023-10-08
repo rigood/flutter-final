@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:moodtree/features/post/views/post_screen/widgets/photo_frame.dart';
 import 'package:moodtree/theme.dart';
 import 'package:moodtree/constants/sizes.dart';
 import 'package:moodtree/constants/gaps.dart';
+import 'package:moodtree/features/post/views/widgets/photo_frame.dart';
 
 class PostItemPhoto extends StatelessWidget {
   final List<String> photoUrlList;

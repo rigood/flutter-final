@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:moodtree/common/widgets/custom_alert_dialog.dart';
 import 'package:moodtree/theme.dart';
 import 'package:moodtree/constants/sizes.dart';
 import 'package:moodtree/constants/gaps.dart';
 import 'package:moodtree/features/post/views/post_screen/widgets/photo_upload_frame.dart';
-import 'package:moodtree/features/post/views/post_screen/widgets/photo_frame.dart';
+import 'package:moodtree/features/post/views/widgets/photo_frame.dart';
 
 class PhotoSection extends ConsumerStatefulWidget {
   final String title;
@@ -26,22 +27,30 @@ class PhotoSection extends ConsumerStatefulWidget {
 }
 
 class _PhotoSectionState extends ConsumerState<PhotoSection> {
-  bool isLoading = false;
+  bool _isLoading = false;
 
   Future<void> _uploadPhotos() async {
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
 
     final photos = await ImagePicker().pickMultiImage();
 
-    if (photos.isNotEmpty) {
+    if (photos.length > 10 || widget.photoUrlList.length + photos.length > 10) {
+      if (context.mounted) {
+        showDialog(
+          context: context,
+          builder: (context) =>
+              const CustomAlertDialog(text: "최대 10장까지 업로드 할 수 있어요."),
+        );
+      }
+    } else if (photos.isNotEmpty) {
       List<String> photoPaths = photos.map((photo) => photo.path).toList();
       widget.addPhotos(photoPaths);
     }
 
     setState(() {
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
@@ -87,7 +96,8 @@ class _PhotoSectionState extends ConsumerState<PhotoSection> {
                     left: Sizes.size20,
                   ),
                   child: PhotoUploadFrame(
-                    onTap: isLoading ? () {} : _uploadPhotos,
+                    onTap: _isLoading ? () {} : _uploadPhotos,
+                    photoCount: widget.photoUrlList.length,
                   ),
                 ),
                 Gaps.h10,

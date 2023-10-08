@@ -1,9 +1,8 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:moodtree/constants/sizes.dart';
-import 'package:moodtree/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:moodtree/theme.dart';
+import 'package:moodtree/constants/sizes.dart';
 
 class PhotoFrame extends StatelessWidget {
   final String photoUrl;

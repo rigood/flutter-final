@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:moodtree/constants/gaps.dart';
 import 'package:moodtree/theme.dart';
 import 'package:moodtree/constants/sizes.dart';
 
 class PhotoUploadFrame extends StatelessWidget {
   final Function onTap;
+  final int photoCount;
 
   const PhotoUploadFrame({
     super.key,
     required this.onTap,
+    required this.photoCount,
   });
 
   @override
@@ -27,14 +30,35 @@ class PhotoUploadFrame extends StatelessWidget {
           ),
           color: ColorThemes.appBackground,
         ),
-        child: const Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FaIcon(
+            const FaIcon(
               FontAwesomeIcons.solidImage,
               size: Sizes.size16,
               color: ColorThemes.primary,
             ),
+            Gaps.v4,
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: Sizes.size10,
+                  color: ColorThemes.primary,
+                ),
+                children: [
+                  TextSpan(
+                    text: "$photoCount",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: ColorThemes.red,
+                    ),
+                  ),
+                  const TextSpan(
+                    text: "/10",
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
